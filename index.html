@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fluftube</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>fluftube - youtube frontend</h1>
+        <input type="text" id="videoUrl" placeholder="Enter YouTube Video URL">
+        <button onclick="playVideo()">Play</button>
+        <p id="status"></p>
+        <video id="videoPlayer" controls style="width: 100%; max-width: 800px;"></video>
+    </div>
+
+    <script>
+        function playVideo() {
+            var videoUrl = document.getElementById("videoUrl").value;
+            if (videoUrl.trim() === "") {
+                document.getElementById("status").innerHTML = "Please enter a valid YouTube video URL";
+                return;
+            }
+            
+            // Extract video ID from URL
+            var videoId = extractVideoId(videoUrl);
+            
+            // Construct embed link
+            var embedLink = "https://www.youtube.com/embed/" + videoId;
+            
+            // Set the source of the video player
+            var videoPlayer = document.getElementById("videoPlayer");
+            videoPlayer.src = embedLink;
+            videoPlayer.style.display = "block";
+            
+            document.getElementById("status").innerHTML = "Playing video...";
+        }
+
+        function extractVideoId(url) {
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+            var match = url.match(regExp);
+            if (match && match[7].length == 11) {
+                return match[7];
+            } else {
+                alert("Invalid YouTube URL");
+            }
+        }
+    </script>
+</body>
+</html>
