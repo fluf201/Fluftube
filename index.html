@@ -45,29 +45,41 @@
         <input type="text" id="videoUrl" placeholder="Enter YouTube Video URL">
         <button onclick="playVideo()">Play</button>
         <p id="status"></p>
-        <iframe id="videoPlayer" width="800" height="450" frameborder="0" allowfullscreen></iframe>
+        <video id="videoPlayer" controls style="width: 100%; max-width: 800px;"></video>
     </div>
 
     <script>
-        function playVideo() {
+        async function playVideo() {
             var videoUrl = document.getElementById("videoUrl").value;
             if (videoUrl.trim() === "") {
                 document.getElementById("status").innerHTML = "Please enter a valid YouTube video URL";
                 return;
             }
-            
-            // Extract video ID from URL
+
             var videoId = extractVideoId(videoUrl);
+            var videoInfoUrl = `https://www.youtube.com/get_video_info?video_id=${videoId}`;
             
-            // Construct embed link
-            var embedLink = "https://www.youtube.com/embed/" + videoId;
-            
-            // Set the source of the video player
-            var videoPlayer = document.getElementById("videoPlayer");
-            videoPlayer.src = embedLink;
-            videoPlayer.style.display = "block";
-            
-            document.getElementById("status").innerHTML = "Playing video...";
+            try {
+                var response = await fetch(videoInfoUrl);
+                var data = await response.text();
+                var parsedData = parseQueryString(data);
+
+                if (parsedData.status === "fail") {
+                    throw new Error(parsedData.reason);
+                }
+
+                var videoFormats = parsedData.url_encoded_fmt_stream_map.split(",");
+                var videoUrl = decodeURIComponent(videoFormats[0].split("&url=")[1]);
+
+                var videoPlayer = document.getElementById("videoPlayer");
+                videoPlayer.src = videoUrl;
+                videoPlayer.style.display = "block";
+
+                document.getElementById("status").innerHTML = "Playing video...";
+            } catch (error) {
+                console.error(error);
+                document.getElementById("status").innerHTML = "Error: Unable to play the video.";
+            }
         }
 
         function extractVideoId(url) {
@@ -78,6 +90,16 @@
             } else {
                 alert("Invalid YouTube URL");
             }
+        }
+
+        function parseQueryString(queryString) {
+            var params = {};
+            var queries = queryString.split("&");
+            for (var i = 0; i < queries.length; i++) {
+                var pair = queries[i].split("=");
+                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || "");
+            }
+            return params;
         }
     </script>
 </body>
