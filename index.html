@@ -57,8 +57,9 @@
             }
 
             var videoId = extractVideoId(videoUrl);
-            var videoInfoUrl = `https://www.youtube.com/get_video_info?video_id=${videoId}`;
-            
+            var proxyUrl = "https://cors-anywhere.herokuapp.com/";
+            var videoInfoUrl = proxyUrl + `https://www.youtube.com/get_video_info?video_id=${videoId}`;
+
             try {
                 var response = await fetch(videoInfoUrl);
                 var data = await response.text();
