@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fluftube</title>
+    <title>FlufTube - YouTube Frontend</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,11 +41,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>fluftube - youtube frontend</h1>
+        <h1>FlufTube - YouTube Frontend</h1>
         <input type="text" id="videoUrl" placeholder="Enter YouTube Video URL">
         <button onclick="playVideo()">Play</button>
         <p id="status"></p>
-        <video id="videoPlayer" controls style="width: 100%; max-width: 800px;"></video>
+        <iframe id="videoPlayer" width="800" height="450" frameborder="0" allowfullscreen></iframe>
     </div>
 
     <script>
